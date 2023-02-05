@@ -12,7 +12,11 @@ class Player(pygame.sprite.Sprite):
             "graphics/test/player.png").convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -26)
+
+        #Graphics
         self.animation = None
+        self.import_player_assets()
+        self.status = 'down'
 
         self.direction = pygame.math.Vector2()
         self.speed = 5
@@ -20,7 +24,10 @@ class Player(pygame.sprite.Sprite):
         self.attack_cooldown = 400
         self.attack_time = None
         self.obstacle_sprites = obstacle_sprites
-        self.import_player_assets()
+
+    def get_status(self):
+        if self.direction.x == 0 and self.direction.y == 0:
+            self.status += '_idle'
 
     def import_player_assets(self):
         character_path = "graphics/player/"
@@ -43,23 +50,25 @@ class Player(pygame.sprite.Sprite):
             for image in import_folder(character_path + animation):
                 self.animation[animation].append(image)
 
-
-
     def input(self):
         """Get the input from the keyboard."""
         keys = pygame.key.get_pressed()
         # Movement
         if keys[pygame.K_UP] or keys[pygame.K_w]:
             self.direction.y = -1
+            self.status = 'up'
         elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
             self.direction.y = 1
+            self.status = 'down'
         else:
             self.direction.y = 0
 
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.direction.x = -1
+            self.status = 'left'
         elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.direction.x = 1
+            self.status = 'right'
         else:
             self.direction.x = 0
 
@@ -114,4 +123,5 @@ class Player(pygame.sprite.Sprite):
         """Update the player, check for input and move the player."""
         self.input()
         self.cooldown()
+        self.get_status()
         self.move(self.speed)
