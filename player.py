@@ -1,11 +1,11 @@
 import pygame
-from settings import *
+from settings import (WIDTH, HEIGHT, TILESIZE, FPS, TILESIZE, weapon_data)
 from support import import_folder
 
 
 class Player(pygame.sprite.Sprite):
     """Player class"""
-    def __init__(self, pos, groups, obstacle_sprites):
+    def __init__(self, pos, groups, obstacle_sprites, create_attack, destroy_weapon):
         """Initialize the player with direction, speed and obstacles."""
         super().__init__(groups)
         self.image = pygame.image.load(
@@ -13,19 +13,27 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -26)
 
-        #Graphics
+        # Graphics
         self.animation = None
         self.import_player_assets()
         self.status = 'down'
         self.frame_index = 0
         self.animation_speed = 0.15
 
+        # Movement
         self.direction = pygame.math.Vector2()
         self.speed = 5
         self.attacking = False
         self.attack_cooldown = 400
         self.attack_time = None
+
         self.obstacle_sprites = obstacle_sprites
+
+        # Weapon
+        self.create_attack = create_attack
+        self.weapon_index = 0
+        self.weapon = 'sword'
+        self.destroy_weapon = destroy_weapon
 
     def get_status(self):
         if self.direction.x == 0 and self.direction.y == 0:
@@ -92,13 +100,13 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE]:
             self.attacking = True
             self.attack_time = pygame.time.get_ticks()
-            print("Attack!")
+            self.create_attack()
 
         # Magic
         if keys[pygame.K_LCTRL]:
             self.attacking = True
             self.attack_time = pygame.time.get_ticks()
-            print("Magic!")
+            self.create_attack()
 
     def cooldown(self):
         """Check the cooldown of the attack."""
@@ -106,6 +114,8 @@ class Player(pygame.sprite.Sprite):
         if self.attacking:
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.attacking = False
+                self.destroy_weapon()
+
 
     def move(self, speed):
         """Move the player and check for collisions."""

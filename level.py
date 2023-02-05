@@ -7,6 +7,7 @@ from support import import_csv_layout, import_folder
 from tile import Tile
 from player import Player
 from debug import debug
+from weapon import Weapon
 
 
 class Level:
@@ -19,8 +20,19 @@ class Level:
         self.obstacle_sprites = pygame.sprite.Group()
         self.player = None
 
+        # Attack sprites
+        self.current_attack = None
+
         # sprite setup
         self.create_map()
+
+    def create_attack(self):
+        self.current_attack = Weapon(self.player, (self.visible_sprites,))
+
+    def destroy_weapon(self):
+        if self.current_attack:
+            self.current_attack.kill()
+        self.current_attack = None
 
     def create_map(self):
         layouts = {
@@ -56,7 +68,13 @@ class Level:
                                 graphics['objects'][int(col)],
                             )
 
-        self.player = Player((2000, 1430), (self.visible_sprites,), self.obstacle_sprites)
+        self.player = Player(
+            (2000, 1430),
+            (self.visible_sprites,),
+            self.obstacle_sprites,
+            self.create_attack,
+            self.destroy_weapon,
+        )
 
     def run(self):
         # update and draw the game
