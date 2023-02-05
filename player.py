@@ -17,6 +17,8 @@ class Player(pygame.sprite.Sprite):
         self.animation = None
         self.import_player_assets()
         self.status = 'down'
+        self.frame_index = 0
+        self.animation_speed = 0.15
 
         self.direction = pygame.math.Vector2()
         self.speed = 5
@@ -131,9 +133,19 @@ class Player(pygame.sprite.Sprite):
                     if self.direction.y < 0:
                         self.hitbox.top = sprite.hitbox.bottom
 
+    def animate(self):
+        """Animate the player."""
+        animation = self.animation[self.status]
+        self.frame_index += self.animation_speed
+        self.frame_index %= len(animation)
+
+        self.image = animation[int(self.frame_index)]
+        self.rect = self.image.get_rect(center=self.hitbox.center)
+
     def update(self):
         """Update the player, check for input and move the player."""
         self.input()
         self.cooldown()
         self.get_status()
+        self.animate()
         self.move(self.speed)
