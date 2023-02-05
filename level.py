@@ -40,14 +40,23 @@ class Level:
                         x = col_index * TILESIZE
                         y = row_index * TILESIZE
                         if style == 'boundary':
-                            Tile((x, y), [self.obstacle_sprites], 'invisible')
+                            Tile((x, y), (self.obstacle_sprites,), 'invisible')
                         if style == 'grass':
-                            Tile((x, y), [self.obstacle_sprites, self.visible_sprites], 'grass', random.choice(graphics['grass']))
+                            Tile(
+                                (x, y),
+                                (self.visible_sprites, self.obstacle_sprites,),
+                                'grass',
+                                random.choice(graphics['grass']),
+                            )
                         if style == 'object':
-                            Tile((x, y), [self.obstacle_sprites, self.visible_sprites], 'objects', graphics['objects'][int(col)])
+                            Tile(
+                                (x, y),
+                                (self.visible_sprites, self.obstacle_sprites,),
+                                'object',
+                                graphics['objects'][int(col)],
+                            )
 
-
-        self.player = Player((2000, 1430), [self.visible_sprites], self.obstacle_sprites)
+        self.player = Player((2000, 1430), (self.visible_sprites,), self.obstacle_sprites)
 
     def run(self):
         # update and draw the game
