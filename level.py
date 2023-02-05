@@ -1,8 +1,9 @@
 import operator
+import random
 
 import pygame
 from settings import *
-from support import import_csv_layout
+from support import import_csv_layout, import_folder
 from tile import Tile
 from player import Player
 from debug import debug
@@ -24,7 +25,14 @@ class Level:
     def create_map(self):
         layouts = {
             'boundary': import_csv_layout('map/map_FloorBlocks.csv'),
+            'grass': import_csv_layout('map/map_Grass.csv'),
+            'object': import_csv_layout('map/map_Objects.csv'),
         }
+        graphics = {
+            'grass': import_folder('graphics/grass'),
+            'objects': import_folder('graphics/objects'),
+        }
+        print(graphics)
         for style, layout in layouts.items():
             for row_index, row in enumerate(layout):
                 for col_index, col in enumerate(row):
@@ -33,6 +41,10 @@ class Level:
                         y = row_index * TILESIZE
                         if style == 'boundary':
                             Tile((x, y), [self.obstacle_sprites], 'invisible')
+                        if style == 'grass':
+                            Tile((x, y), [self.obstacle_sprites, self.visible_sprites], 'grass', random.choice(graphics['grass']))
+                        if style == 'object':
+                            Tile((x, y), [self.obstacle_sprites, self.visible_sprites], 'objects', graphics['objects'][int(col)])
 
 
         self.player = Player((2000, 1430), [self.visible_sprites], self.obstacle_sprites)
