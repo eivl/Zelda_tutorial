@@ -7,6 +7,7 @@ from support import import_csv_layout, import_folder
 from tile import Tile
 from player import Player
 from debug import debug
+from ui import UI
 from weapon import Weapon
 
 
@@ -25,6 +26,9 @@ class Level:
 
         # sprite setup
         self.create_map()
+
+        # User Interface
+        self.ui = UI()
 
     def create_attack(self):
         self.current_attack = Weapon(self.player, (self.visible_sprites,))
@@ -80,7 +84,7 @@ class Level:
         # update and draw the game
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
-        debug(self.player.weapon)
+        self.ui.display(self.player)
 
 
 class YSortCameraGroup(pygame.sprite.Group):
