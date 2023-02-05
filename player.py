@@ -24,7 +24,6 @@ class Player(pygame.sprite.Sprite):
 
         # Movement
         self.direction = pygame.math.Vector2()
-        self.speed = 5
         self.attacking = False
         self.attack_cooldown = 400
         self.attack_time = None
@@ -40,6 +39,19 @@ class Player(pygame.sprite.Sprite):
         self.can_switch_weapon = True
         self.weapon_switch_time = None
         self.switch_duration_cooldown = 200
+
+        # Stats
+        self.stats = {
+            'health': 100,
+            'energy': 60,
+            'attack': 10,
+            'magic': 4,
+            'speed': 5,
+        }
+        self.health = self.stats['health']
+        self.energy = self.stats['energy']
+        self.xp = 123
+        self.speed = self.stats['speed']
 
     def get_status(self):
         if self.direction.x == 0 and self.direction.y == 0:
