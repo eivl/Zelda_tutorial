@@ -66,6 +66,8 @@ class Player(pygame.sprite.Sprite):
 
     def input(self):
         """Get the input from the keyboard."""
+        if self.attacking:
+            return
         keys = pygame.key.get_pressed()
         # Movement
         if keys[pygame.K_UP] or keys[pygame.K_w]:
