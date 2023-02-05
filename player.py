@@ -1,3 +1,5 @@
+from itertools import cycle
+
 import pygame
 from settings import (WIDTH, HEIGHT, TILESIZE, FPS, TILESIZE, weapon_data)
 from support import import_folder
@@ -31,9 +33,13 @@ class Player(pygame.sprite.Sprite):
 
         # Weapon
         self.create_attack = create_attack
-        self.weapon_index = 0
-        self.weapon = 'sword'
+        self.weapons = cycle(weapon_data)
+        self.weapon = next(self.weapons)
         self.destroy_weapon = destroy_weapon
+
+        self.can_switch_weapon = True
+        self.weapon_switch_time = None
+        self.switch_duration_cooldown = 200
 
     def get_status(self):
         if self.direction.x == 0 and self.direction.y == 0:
@@ -108,6 +114,12 @@ class Player(pygame.sprite.Sprite):
             self.attack_time = pygame.time.get_ticks()
             self.create_attack()
 
+        # Weapon Switch
+        if keys[pygame.K_q] and self.can_switch_weapon:
+            self.can_switch_weapon = False
+            self.weapon_switch_time = pygame.time.get_ticks()
+            self.weapon = next(self.weapons)
+
     def cooldown(self):
         """Check the cooldown of the attack."""
         current_time = pygame.time.get_ticks()
@@ -115,7 +127,9 @@ class Player(pygame.sprite.Sprite):
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.attacking = False
                 self.destroy_weapon()
-
+        if not self.can_switch_weapon:
+            if current_time - self.weapon_switch_time >= self.switch_duration_cooldown:
+                self.can_switch_weapon = True
 
     def move(self, speed):
         """Move the player and check for collisions."""
