@@ -37,11 +37,17 @@ class UI:
         bg_rect = pygame.Rect(left, top, ITEM_BOX_SIZE, ITEM_BOX_SIZE)
         pygame.draw.rect(self.display_surface, UI_BG_COLOR, bg_rect)
         pygame.draw.rect(self.display_surface, UI_BORDER_COLOR, bg_rect, 3)
+        return bg_rect
 
+    def weapon_overlay(self, weapon):
+        bg_rect = self.selection_box(10, HEIGHT - ITEM_BOX_SIZE - 20)  # Weapon
+        weapon_surface = pygame.image.load(weapon_data[weapon]['graphics']).convert_alpha()
+        weapon_rect = weapon_surface.get_rect(center=bg_rect.center)
+        self.display_surface.blit(weapon_surface, weapon_rect)
 
     def display(self, player):
         self.show_bar(player.health, player.stats['health'], self.health_bar, HEALTH_COLOR)
         self.show_bar(player.energy, player.stats['energy'], self.energy_bar, ENERGY_COLOR)
         self.show_xp(player.xp)
-        self.selection_box(10, HEIGHT-ITEM_BOX_SIZE-20)  # Weapon
+        self.weapon_overlay(player.weapon)
         self.selection_box(80, HEIGHT-ITEM_BOX_SIZE-15)  # Magic
