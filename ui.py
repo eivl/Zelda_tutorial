@@ -25,6 +25,17 @@ class UI:
         # Draw border
         pygame.draw.rect(self.display_surface, UI_BORDER_COLOR, bar, 4)
 
+    def show_xp(self, xp):
+        text_surface = self.font.render(f'XP: {xp}', False, TEXT_COLOR)
+        text_rect = text_surface.get_rect(bottomright=(WIDTH-20, HEIGHT-20))
+
+        pygame.draw.rect(self.display_surface, UI_BG_COLOR, text_rect.inflate(10, 10))
+        self.display_surface.blit(text_surface, text_rect)
+        pygame.draw.rect(self.display_surface, UI_BORDER_COLOR, text_rect.inflate(10, 10), 3)
+
+
+
     def display(self, player):
         self.show_bar(player.health, player.stats['health'], self.health_bar, HEALTH_COLOR)
         self.show_bar(player.energy, player.stats['energy'], self.energy_bar, ENERGY_COLOR)
+        self.show_xp(player.xp)
