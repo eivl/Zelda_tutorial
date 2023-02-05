@@ -27,7 +27,9 @@ class Player(pygame.sprite.Sprite):
 
     def get_status(self):
         if self.direction.x == 0 and self.direction.y == 0:
-            self.status += '_idle'
+            if 'idle' not in self.status:
+                self.status += '_idle'
+
 
     def import_player_assets(self):
         character_path = "graphics/player/"
